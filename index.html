@@ -1718,7 +1718,7 @@
       font-weight: 900;
       letter-spacing: -.5px;
       margin: 0;
-      color: white;
+      color: #000ffcc;
     }
 
     /* Make footer more compact on narrow screens and center stack everything */
@@ -2391,54 +2391,44 @@
     </div>
   </footer>
   <!-- END: Footer -->
-
-  <!-- Scripts -->
+ <!-- Scripts -->
   <script>
-    // REAL global visitor counter using CountAPI + per-session guard
-    (async function () {
-      const counterElement = document.getElementById('nk-visitor-count');
-      if (!counterElement) return;
+  window.addEventListener('DOMContentLoaded', async () => {
+    const counterElement = document.getElementById('nk-visitor-count');
+    if (!counterElement) {
+      console.error('Visitor count element not found');
+      return;
+    }
 
-      const namespace = 'nkcoinhub';
-      const key = 'main-visitor-counter';
-      const url = `https://api.countapi.xyz/hit/${namespace}/${key}`;
+    const namespace = 'nkcoinhub';
+    const key = 'main-visitor-counter';
+    const sessionKey = 'nkcoinhub_visitor_counted';
 
-      // Only count once per browser tab/session
-      const sessionKey = 'nkcoinhub_visitor_counted';
+    try {
+      let url;
+
       if (sessionStorage.getItem(sessionKey) === 'yes') {
-        // Just read the current value without incrementing
-        const getUrl = `https://api.countapi.xyz/get/${namespace}/${key}`;
-        try {
-          const res = await fetch(getUrl);
-          const data = await res.json();
-          counterElement.textContent = (data.value || '—').toString();
-        } catch (err) {
-          console.error('Visitor counter read error:', err);
-          counterElement.textContent = '—';
-        }
-        return;
+        url = `https://api.countapi.xyz/get/${namespace}/${key}`;
+      } else {
+        url = `https://api.countapi.xyz/hit/${namespace}/${key}`;
+        sessionStorage.setItem(sessionKey, 'yes');
       }
 
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
+      const res = await fetch(url);
+      const data = await res.json();
 
-        if (typeof data.value === 'number') {
-          counterElement.textContent = data.value.toString();
-          sessionStorage.setItem(sessionKey, 'yes');
-          console.log('Visitor count:', data.value);
+      counterElement.textContent =
+        typeof data.value === 'number' ? data.value : '—';
 
-        } else {
-          counterElement.textContent = '—';
-        }
-      } catch (error) {
-        console.error('Visitor counter error:', error);
-        counterElement.textContent = '—';
-      }
-    })();
-  </script>
+    } catch (err) {
+      console.error('Visitor counter error:', err);
+      counterElement.textContent = '—';
+    }
+  });
+</script>
 
 
+ 
 
   <!-- ================= COIN DATA + TABLE LOGIC ================= -->
   <script>
