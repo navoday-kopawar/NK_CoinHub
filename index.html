@@ -2391,42 +2391,6 @@
     </div>
   </footer>
   <!-- END: Footer -->
- <!-- Scripts -->
-  <script>
-  window.addEventListener('DOMContentLoaded', async () => {
-    const counterElement = document.getElementById('nk-visitor-count');
-    if (!counterElement) {
-      console.error('Visitor count element not found');
-      return;
-    }
-
-    const namespace = 'nkcoinhub';
-    const key = 'main-visitor-counter';
-    const sessionKey = 'nkcoinhub_visitor_counted';
-
-    try {
-      let url;
-
-      if (sessionStorage.getItem(sessionKey) === 'yes') {
-        url = `https://api.countapi.xyz/get/${namespace}/${key}`;
-      } else {
-        url = `https://api.countapi.xyz/hit/${namespace}/${key}`;
-        sessionStorage.setItem(sessionKey, 'yes');
-      }
-
-      const res = await fetch(url);
-      const data = await res.json();
-
-      counterElement.textContent =
-        typeof data.value === 'number' ? data.value : '—';
-
-    } catch (err) {
-      console.error('Visitor counter error:', err);
-      counterElement.textContent = '—';
-    }
-  });
-</script>
-
 
  
 
@@ -2960,125 +2924,34 @@
     }
   </script>
 
-<!-- <script>
-(() => {
-  const defaultImg = 'https://i.ibb.co/TqPyvvnR/1745995898533-removebg-preview.png';
 
-  /* 🔁 TABLE-ID → coinData KEY MAP */
-  const TABLE_MAP = {
-    'table-rupee-coins': 'rupeeCoins',
-    'table-comm-coins': 'commemorativeCoins',
-    'table-rupee-notes': 'rupeeNotes',
-    'table-comm-notes': 'commemorativeNotes',
-    'table-foreign-coins': 'foreignCoins',
-    'table-foreign-notes': 'foreignNotes',
-    'table-error-coins': 'errorCoins',
-    'table-error-notes': 'errorNotes'
-  };
+<script>
+  window.addEventListener('DOMContentLoaded', async () => {
+    const counterElement = document.getElementById('nk-visitor-count');
+    if (!counterElement) return;
 
-  function renderCards(container, items) {
-    container.innerHTML = '';
+    const namespace = 'nkcoinhub';
+    const key = 'main-visitor-counter';
+    const sessionKey = 'nkcoinhub_visitor_counted';
 
-    items.forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'nk-card';
+    try {
+      const url = sessionStorage.getItem(sessionKey)
+        ? `https://countapi.xyz/get/${namespace}/${key}`
+        : `https://countapi.xyz/hit/${namespace}/${key}`;
 
-      card.innerHTML = `
-        <div class="coin-sides">
-          <img src="${item.obverse?.image || defaultImg}">
-          <img src="${item.reverse?.image || defaultImg}">
-        </div>
-        <div class="coin-title">
-          ${item.reverse?.design || item.denomination}
-        </div>
-      `;
+      const res = await fetch(url);
+      const data = await res.json();
 
-      const popup = document.createElement('div');
-      popup.className = 'popup-bg';
-      popup.innerHTML = `
-        <div class="popup">
-          <div class="popup-header">
-            <div class="popup-title">${item.denomination}</div>
-            <button class="close-btn">X</button>
-          </div>
-          <div class="popup-grid">
-            <div>
-              <img src="${item.obverse?.image || defaultImg}">
-              <p><b>Design:</b> ${item.obverse?.design || '-'}</p>
-              <p><b>Lettering:</b> ${item.obverse?.lettering || '-'}</p>
-              <p><b>Mints:</b> ${item.obverse?.mints || '-'}</p>
-            </div>
-            <div>
-              <img src="${item.reverse?.image || defaultImg}">
-              <p><b>Design:</b> ${item.reverse?.design || '-'}</p>
-              <p><b>Lettering:</b> ${item.reverse?.lettering || '-'}</p>
-              <p><b>Year:</b> ${item.reverse?.year || '-'}</p>
-            </div>
-          </div>
-        </div>
-      `;
+      counterElement.textContent =
+        typeof data.value === 'number' ? data.value : '—';
 
-      card.onclick = () => popup.style.display = 'flex';
-      popup.onclick = e => {
-        if (e.target === popup || e.target.classList.contains('close-btn')) {
-          popup.style.display = 'none';
-        }
-      };
-
-      container.appendChild(card);
-      document.body.appendChild(popup);
-    });
-  }
-
-  /* 🔍 FILTER HANDLER (NOW WORKS FOR NOTES TOO) */
-  document.querySelectorAll('.filter-buttons').forEach(filterBox => {
-    const tableId = filterBox.dataset.table;
-    const dataKey = TABLE_MAP[tableId];
-    if (!dataKey || !coinData[dataKey]) return;
-
-    const cardsArea = filterBox.closest('.table-section')
-      .querySelector('.cards-area');
-
-    const fullData = coinData[dataKey];
-
-    // Initial render
-    renderCards(cardsArea, fullData);
-
-    filterBox.addEventListener('click', e => {
-      const btn = e.target.closest('.filter-btn');
-      if (!btn) return;
-
-      filterBox.querySelectorAll('.filter-btn')
-        .forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const val = btn.dataset.value;
-      const filtered = (val === 'all')
-        ? fullData
-        : fullData.filter(item =>
-            String(item.denomination || '').includes(val)
-          );
-
-      renderCards(cardsArea, filtered);
-    });
+      sessionStorage.setItem(sessionKey, 'yes');
+    } catch (err) {
+      console.error('Visitor counter error:', err);
+      counterElement.textContent = '—';
+    }
   });
-
-  /* 📂 CATEGORY TABS (UNCHANGED) */
-  document.querySelectorAll('.category-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.category-btn')
-        .forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      document.querySelectorAll('.category-section')
-        .forEach(sec => sec.style.display = 'none');
-
-      const target = document.getElementById(btn.dataset.category);
-      if (target) target.style.display = 'block';
-    });
-  });
-})();
-</script> -->
+</script>
 
 </body>
 
