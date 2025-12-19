@@ -2380,7 +2380,7 @@
         <div class="footer-col" style="display:flex;justify-content:flex-end;align-items:flex-start;">
           <div class="visitor-box" role="status" aria-live="polite" aria-atomic="true">
             <h4>Visitor Count</h4>
-            <p class="visitor-count" id="nk-visitor-count">0</p>
+          <p class="visitor-count" id="nk-visitor-count">—</p>
           </div>
         </div>
       </div>
@@ -2426,6 +2426,8 @@
         if (typeof data.value === 'number') {
           counterElement.textContent = data.value.toString();
           sessionStorage.setItem(sessionKey, 'yes');
+          console.log('Visitor count:', data.value);
+
         } else {
           counterElement.textContent = '—';
         }
